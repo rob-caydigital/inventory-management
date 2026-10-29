@@ -1,0 +1,9 @@
+schema_version: "1.1"
+name: fixture-app-hidden-nav-links
+expected_outcome: |
+  The small CRM app's purple top bar is replaced by a dark, collapsible left sidebar containing all five
+  routes, including Settings and Billing which were hidden in a "More" dropdown. The search box and user
+  menu get sensible new homes, the Add contact modal still works above the sidebar, spacing is normalized
+  onto a consistent scale, existing <script setup> conventions are kept, and the app builds.
+context:
+  scaffold_script: place-files.sh

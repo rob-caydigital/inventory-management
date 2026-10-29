@@ -1,7 +1,11 @@
 <template>
   <div class="profile-menu">
     <button
+      type="button"
       class="profile-button"
+      aria-haspopup="menu"
+      :aria-expanded="isDropdownOpen"
+      :title="currentUser.name"
       @click="toggleDropdown"
       @blur="handleBlur"
     >
@@ -21,7 +25,7 @@
       </svg>
     </button>
 
-    <div v-if="isDropdownOpen" class="dropdown-menu">
+    <div v-if="isDropdownOpen" class="dropdown-menu" role="menu">
       <div class="dropdown-header">
         <div class="avatar-large">
           {{ getInitials(currentUser.name) }}
@@ -121,86 +125,94 @@ const handleLogout = () => {
 }
 
 .profile-button {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  padding: 0.5rem 0.875rem;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--sidebar-text-active);
   cursor: pointer;
-  transition: all 0.2s ease;
   font-family: inherit;
+  text-align: left;
 }
 
 .profile-button:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: var(--sidebar-bg-hover);
 }
 
 .avatar {
+  flex: none;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-  color: white;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 0.75rem;
-  letter-spacing: 0.025em;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-xs);
+  letter-spacing: 0.02em;
 }
 
 .profile-name {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #0f172a;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--sidebar-text-active);
 }
 
+/* Menu opens upward from the sidebar footer, so the chevron points up when closed */
 .chevron {
-  color: #64748b;
-  transition: transform 0.2s ease;
+  flex: none;
+  color: var(--sidebar-text);
+  transform: rotate(180deg);
 }
 
 .chevron-open {
-  transform: rotate(180deg);
+  transform: none;
 }
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 0.5rem);
-  right: 0;
-  min-width: 280px;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  bottom: calc(100% + var(--space-2));
+  left: 0;
+  min-width: 260px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 60;
   overflow: hidden;
 }
 
 .dropdown-header {
-  padding: 1rem;
+  padding: var(--space-4);
   display: flex;
-  gap: 0.875rem;
+  gap: var(--space-3);
   align-items: center;
-  background: #f8fafc;
+  background: var(--color-bg);
 }
 
 .avatar-large {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-  color: white;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: 0.025em;
-  flex-shrink: 0;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-base);
 }
 
 .user-info {
@@ -209,15 +221,14 @@ const handleLogout = () => {
 }
 
 .user-name {
-  font-weight: 600;
-  color: #0f172a;
-  font-size: 0.938rem;
-  margin-bottom: 0.25rem;
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+  font-size: var(--text-base);
 }
 
 .user-email {
-  font-size: 0.813rem;
-  color: #64748b;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -225,57 +236,84 @@ const handleLogout = () => {
 
 .dropdown-divider {
   height: 1px;
-  background: #e2e8f0;
-  margin: 0.5rem 0;
+  background: var(--color-border);
+  margin: var(--space-2) 0;
 }
 
 .dropdown-item {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
   background: none;
   border: none;
   text-align: left;
   cursor: pointer;
-  transition: background 0.15s ease;
   font-family: inherit;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #334155;
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
 }
 
 .dropdown-item:hover {
-  background: #f8fafc;
+  background: var(--color-surface-muted);
 }
 
 .dropdown-item svg {
-  color: #64748b;
+  color: var(--color-text-muted);
   flex-shrink: 0;
 }
 
-.dropdown-item.logout {
-  color: #dc2626;
-}
-
+.dropdown-item.logout,
 .dropdown-item.logout svg {
-  color: #dc2626;
+  color: var(--color-danger);
 }
 
 .dropdown-item.logout:hover {
-  background: #fef2f2;
+  background: var(--color-danger-soft);
 }
 
 .task-badge {
   margin-left: auto;
-  background: #2563eb;
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.125rem 0.5rem;
-  border-radius: 12px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
   min-width: 20px;
   text-align: center;
+}
+
+/* Icon rail (desktop collapsed or tablet): avatar only, menu opens to the right.
+   Plain descendant selector on purpose: scoped CSS only tags the last part,
+   while :global(...) here compiles to a bare .sidebar.is-collapsed rule. */
+@media (min-width: 640px) {
+  .sidebar.is-collapsed .profile-button {
+    justify-content: center;
+    padding: var(--space-2) 0;
+  }
+
+  .sidebar.is-collapsed .profile-name,
+  .sidebar.is-collapsed .chevron {
+    display: none;
+  }
+
+  .sidebar.is-collapsed .dropdown-menu {
+    bottom: 0;
+    left: calc(100% + var(--space-4));
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .profile-button,
+  .dropdown-item {
+    transition: background-color var(--transition-fast);
+  }
+
+  .chevron {
+    transition: transform var(--transition-fast);
+  }
 }
 </style>

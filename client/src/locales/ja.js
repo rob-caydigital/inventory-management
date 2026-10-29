@@ -6,6 +6,18 @@ export default {
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    restocking: '補充発注',
+    reports: 'レポート',
+    groupOperations: 'オペレーション',
+    groupPlanning: '計画',
+    groupFinance: '財務・分析',
+    mainNavigation: 'メインナビゲーション',
+    collapseSidebar: 'サイドバーを折りたたむ',
+    expandSidebar: 'サイドバーを展開',
+    openMenu: 'メニューを開く',
+    closeMenu: 'メニューを閉じる',
+    filtersLabel: 'グローバルフィルター',
+    resetFilters: 'すべてのフィルターをリセット',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -55,7 +67,10 @@ export default {
       daysDelayed: '遅延日数',
       priority: '優先度',
       unitsShort: '単位不足',
-      days: '日'
+      days: '日',
+      actions: '操作',
+      createPo: '発注書を作成',
+      viewPo: '発注書を表示'
     },
     topProducts: {
       title: '収益別トップ製品',
@@ -106,6 +121,15 @@ export default {
     title: '注文',
     description: '顧客注文の表示と管理',
     allOrders: 'すべての注文',
+    submittedOrders: {
+      title: '送信済み注文',
+      total: '合計',
+      submittedDate: '送信日',
+      leadTime: 'リードタイム',
+      days: '{count}日',
+      status: 'ステータス',
+      submitted: '送信済み'
+    },
     totalOrders: '総注文数',
     totalRevenue: '総収益',
     avgOrderValue: '平均注文額',
@@ -196,6 +220,34 @@ export default {
     orderStatus: '注文ステータス',
     all: 'すべて',
     allMonths: 'すべての月'
+  },
+
+  // Restocking
+  restocking: {
+    title: '補充発注',
+    description: '需要トレンドを優先して、予算内で補充注文を計画します',
+    budget: '予算',
+    allocated: '割当額',
+    remaining: '残額',
+    longestLeadTime: '最長リードタイム',
+    days: '{count}日',
+    table: {
+      include: '含める',
+      sku: 'SKU',
+      itemName: '品名',
+      trend: 'トレンド',
+      quantity: '推奨数量',
+      unitCost: '単価',
+      lineTotal: '小計',
+      leadTime: 'リードタイム（日）'
+    },
+    recommendation: '推奨注文',
+    placeOrder: '注文する',
+    placing: '注文中...',
+    success: '注文 {orderNumber} を送信しました。配達予定日: {date}',
+    viewOrders: '注文を表示',
+    error: '注文の送信に失敗しました',
+    empty: '現在の予算では発注できる品目がありません'
   },
 
   // Statuses

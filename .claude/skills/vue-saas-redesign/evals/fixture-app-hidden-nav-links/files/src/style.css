@@ -1,0 +1,11 @@
+body { margin: 0; font-family: Arial, sans-serif; background: #eee; color: #222; }
+.wrapper { max-width: 1200px; margin: 0 auto; padding: 15px; margin-top: 70px; }
+.box { background: white; padding: 13px; margin-bottom: 18px; border: 1px solid #ccc; border-radius: 3px; }
+.box h3 { margin-top: 0; font-size: 17px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 6px; border-bottom: 1px solid #ddd; text-align: left; }
+.btn { background: #6d28d9; color: white; border: none; padding: 7px 11px; border-radius: 4px; cursor: pointer; }
+.pill { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 12px; }
+.pill.won { background: #d1fae5; color: #065f46; }
+.pill.open { background: #ede9fe; color: #5b21b6; }
+.pill.lost { background: #fee2e2; color: #991b1b; }

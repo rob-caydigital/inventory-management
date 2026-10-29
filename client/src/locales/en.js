@@ -6,6 +6,18 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
+    reports: 'Reports',
+    groupOperations: 'Operations',
+    groupPlanning: 'Planning',
+    groupFinance: 'Finance & Insights',
+    mainNavigation: 'Main navigation',
+    collapseSidebar: 'Collapse sidebar',
+    expandSidebar: 'Expand sidebar',
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
+    filtersLabel: 'Global filters',
+    resetFilters: 'Reset all filters',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -55,7 +67,10 @@ export default {
       daysDelayed: 'Days Delayed',
       priority: 'Priority',
       unitsShort: 'units short',
-      days: 'days'
+      days: 'days',
+      actions: 'Actions',
+      createPo: 'Create PO',
+      viewPo: 'View PO'
     },
     topProducts: {
       title: 'Top Products by Revenue',
@@ -106,6 +121,15 @@ export default {
     title: 'Orders',
     description: 'View and manage customer orders',
     allOrders: 'All Orders',
+    submittedOrders: {
+      title: 'Submitted Orders',
+      total: 'Total',
+      submittedDate: 'Submitted',
+      leadTime: 'Lead Time',
+      days: '{count} days',
+      status: 'Status',
+      submitted: 'Submitted'
+    },
     totalOrders: 'Total Orders',
     totalRevenue: 'Total Revenue',
     avgOrderValue: 'Avg Order Value',
@@ -196,6 +220,34 @@ export default {
     orderStatus: 'Order Status',
     all: 'All',
     allMonths: 'All Months'
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Plan a restocking order against a budget, prioritized by demand trend',
+    budget: 'Budget',
+    allocated: 'Allocated',
+    remaining: 'Remaining',
+    longestLeadTime: 'Longest Lead Time',
+    days: '{count} days',
+    table: {
+      include: 'Include',
+      sku: 'SKU',
+      itemName: 'Item Name',
+      trend: 'Trend',
+      quantity: 'Recommended Qty',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total',
+      leadTime: 'Lead Time (days)'
+    },
+    recommendation: 'Recommended Order',
+    placeOrder: 'Place Order',
+    placing: 'Placing order...',
+    success: 'Order {orderNumber} submitted. Expected delivery: {date}.',
+    viewOrders: 'View orders',
+    error: 'Failed to place order',
+    empty: 'No items can be ordered with the current budget'
   },
 
   // Statuses

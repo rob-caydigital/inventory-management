@@ -1,0 +1,10 @@
+schema_version: "1.1"
+name: inventory-dashboard-sidebar
+expected_outcome: |
+  The Vue 3 inventory dashboard has its top nav replaced by a dark, collapsible left sidebar holding all
+  seven destinations (Overview, Inventory, Orders, Finance, Demand Forecast, Restocking, Reports) with
+  i18n labels intact. Global filters live in a slim header; profile menu and language switcher live in
+  the sidebar footer and their menus open fully visible. Views share consistent spacing via design
+  tokens. The app builds, every page still loads its data, no emojis are added, and a mobile drawer works.
+context:
+  scaffold_script: place-files.sh

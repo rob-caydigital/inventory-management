@@ -1,5 +1,5 @@
 <template>
-  <div class="orders">
+  <div class="page orders">
     <div class="page-header">
       <h2>{{ t('orders.title') }}</h2>
       <p>{{ t('orders.description') }}</p>
@@ -7,7 +7,7 @@
 
     <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
-    <div v-else>
+    <div v-else class="page-body">
       <div class="stats-grid">
         <div class="stat-card success">
           <div class="stat-label">{{ t('status.delivered') }}</div>
@@ -24,6 +24,52 @@
         <div class="stat-card danger">
           <div class="stat-label">{{ t('status.backordered') }}</div>
           <div class="stat-value">{{ getOrdersByStatus('Backordered').length }}</div>
+        </div>
+      </div>
+
+      <div v-if="restockingOrders.length > 0" class="card">
+        <div class="card-header">
+          <h3 class="card-title">{{ t('orders.submittedOrders.title') }} ({{ restockingOrders.length }})</h3>
+        </div>
+        <div class="table-container">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th class="col-order-number">{{ t('orders.table.orderNumber') }}</th>
+                <th class="col-items">{{ t('orders.table.items') }}</th>
+                <th class="col-value">{{ t('orders.submittedOrders.total') }}</th>
+                <th class="col-date">{{ t('orders.submittedOrders.submittedDate') }}</th>
+                <th class="col-date">{{ t('orders.submittedOrders.leadTime') }}</th>
+                <th class="col-date">{{ t('orders.table.expectedDelivery') }}</th>
+                <th class="col-status">{{ t('orders.submittedOrders.status') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="order in restockingOrders" :key="order.id">
+                <td class="col-order-number"><strong>{{ order.order_number }}</strong></td>
+                <td class="col-items">
+                  <details class="items-details">
+                    <summary class="items-summary">
+                      {{ t('orders.itemsCount', { count: order.items.length }) }}
+                    </summary>
+                    <div class="items-dropdown">
+                      <div v-for="item in order.items" :key="item.sku" class="item-entry">
+                        <span class="item-name">{{ translateProductName(item.name) }}</span>
+                        <span class="item-meta">{{ t('orders.quantity') }}: {{ item.quantity }} @ {{ currencySymbol }}{{ item.unit_cost }}</span>
+                      </div>
+                    </div>
+                  </details>
+                </td>
+                <td class="col-value"><strong>{{ currencySymbol }}{{ order.total_value.toLocaleString() }}</strong></td>
+                <td class="col-date">{{ formatDate(order.submitted_date) }}</td>
+                <td class="col-date">{{ t('orders.submittedOrders.days', { count: order.lead_time_days }) }}</td>
+                <td class="col-date">{{ formatDate(order.expected_delivery) }}</td>
+                <td class="col-status">
+                  <span class="badge info">{{ t('orders.submittedOrders.submitted') }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -54,7 +100,7 @@
                       {{ t('orders.itemsCount', { count: order.items.length }) }}
                     </summary>
                     <div class="items-dropdown">
-                      <div v-for="(item, idx) in order.items" :key="idx" class="item-entry">
+                      <div v-for="item in order.items" :key="item.sku" class="item-entry">
                         <span class="item-name">{{ translateProductName(item.name) }}</span>
                         <span class="item-meta">{{ t('orders.quantity') }}: {{ item.quantity }} @ {{ currencySymbol }}{{ item.unit_price }}</span>
                       </div>
@@ -95,6 +141,7 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+    const restockingOrders = ref([])
 
     // Use shared filters
     const {
@@ -124,6 +171,16 @@ export default {
       }
     }
 
+    // Loaded independently so a failure here never blocks the main orders
+    const loadRestockingOrders = async () => {
+      try {
+        restockingOrders.value = await api.getRestockingOrders()
+      } catch (err) {
+        console.error('Failed to load submitted orders:', err)
+        restockingOrders.value = []
+      }
+    }
+
     // Watch for filter changes and reload data
     watch([selectedPeriod, selectedLocation, selectedCategory, selectedStatus], () => {
       loadOrders()
@@ -146,20 +203,27 @@ export default {
     const formatDate = (dateString) => {
       const { currentLocale } = useI18n()
       const locale = currentLocale.value === 'ja' ? 'ja-JP' : 'en-US'
-      return new Date(dateString).toLocaleDateString(locale, {
+      // Date-only strings (YYYY-MM-DD) parse as UTC midnight and render a day early
+      // in western timezones, so treat them as local midnight instead
+      const normalized = /^\d{4}-\d{2}-\d{2}$/.test(dateString) ? `${dateString}T00:00:00` : dateString
+      return new Date(normalized).toLocaleDateString(locale, {
         year: 'numeric',
         month: 'short',
         day: 'numeric'
       })
     }
 
-    onMounted(loadOrders)
+    onMounted(() => {
+      loadOrders()
+      loadRestockingOrders()
+    })
 
     return {
       t,
       loading,
       error,
       orders,
+      restockingOrders,
       getOrdersByStatus,
       getOrderStatusClass,
       formatDate,
@@ -176,11 +240,11 @@ export default {
 .orders-table {
   table-layout: fixed;
   width: 100%;
+  min-width: 1040px;
 }
 
-/* Column widths */
 .col-order-number {
-  width: 130px;
+  width: 140px;
 }
 
 .col-customer {
@@ -200,21 +264,24 @@ export default {
 }
 
 .col-value {
-  width: 120px;
+  width: 140px;
+  text-align: right;
 }
 
-/* Items details styling */
+/* Items disclosure */
 .items-details {
   position: relative;
 }
 
 .items-summary {
   cursor: pointer;
-  color: #3b82f6;
-  font-weight: 500;
+  color: var(--color-info);
+  font-weight: var(--font-medium);
   list-style: none;
   user-select: none;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .items-summary::-webkit-details-marker {
@@ -222,11 +289,12 @@ export default {
 }
 
 .items-summary::before {
-  content: '▶';
-  display: inline-block;
-  margin-right: 0.375rem;
-  font-size: 0.75rem;
-  transition: transform 0.2s;
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 5px solid currentColor;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
 }
 
 .items-details[open] .items-summary::before {
@@ -234,21 +302,20 @@ export default {
 }
 
 .items-summary:hover {
-  color: #2563eb;
+  color: var(--color-accent-hover);
   text-decoration: underline;
 }
 
-/* Dropdown container */
 .items-dropdown {
   position: absolute;
   top: 100%;
   left: 0;
-  margin-top: 0.5rem;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  padding: 0.75rem;
+  margin-top: var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-2);
   z-index: 10;
   min-width: 300px;
   max-width: 400px;
@@ -257,9 +324,9 @@ export default {
 .item-entry {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.5rem;
-  border-bottom: 1px solid #f1f5f9;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--color-surface-muted);
 }
 
 .item-entry:last-child {
@@ -267,13 +334,19 @@ export default {
 }
 
 .item-name {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #0f172a;
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--color-text);
 }
 
 .item-meta {
-  font-size: 0.813rem;
-  color: #64748b;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .items-summary::before {
+    transition: transform var(--transition-fast);
+  }
 }
 </style>
